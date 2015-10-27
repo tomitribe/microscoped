@@ -16,6 +16,8 @@
  */
 package org.tomitribe.microscoped.method;
 
+import org.tomitribe.microscoped.core.ScopeContext;
+
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
@@ -29,6 +31,6 @@ public class MethodScopedExtension implements Extension {
     }
 
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery abd) {
-        abd.addContext(new org.tomitribe.microscoped.core.ScopeContext<>(MethodScoped.class));
+        abd.addContext(new ScopeContext<>(MethodScoped.class));
     }
 }

@@ -16,6 +16,8 @@
  */
 package org.tomitribe.microscoped.method;
 
+import org.tomitribe.microscoped.core.ScopeContext;
+
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
@@ -32,7 +34,7 @@ public class MethodScopedInterceptor {
 
     @AroundInvoke
     public Object invoke(InvocationContext invocation) throws Exception {
-        final org.tomitribe.microscoped.core.ScopeContext<Method> context = (org.tomitribe.microscoped.core.ScopeContext<Method>) beanManager.getContext(MethodScoped.class);
+        final ScopeContext<Method> context = (ScopeContext<Method>) beanManager.getContext(MethodScoped.class);
 
         final Method previous = context.enter(invocation.getMethod());
         try {

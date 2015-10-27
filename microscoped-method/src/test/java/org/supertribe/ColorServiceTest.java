@@ -22,7 +22,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
-import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
@@ -34,7 +33,6 @@ import javax.enterprise.inject.spi.Extension;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -64,7 +62,8 @@ public class ColorServiceTest extends Assert {
      */
     @Deployment
     public static WebArchive createDeployment() {
-        final WebArchive webArchive = ShrinkWrap.create(WebArchive.class)
+
+        return ShrinkWrap.create(WebArchive.class)
                 .addPackage(ScopeContext.class.getPackage())
                 .addPackage(MethodScopedExtension.class.getPackage())
                 .addPackage(ColorService.class.getPackage())
@@ -73,11 +72,6 @@ public class ColorServiceTest extends Assert {
                 .addAsWebInfResource(new StringAsset(MethodScopedExtension.class.getName()),
                         "classes/META-INF/services/" + Extension.class.getName()
                 );
-
-//        webArchive.as(ZipExporter.class).exportTo(new File("/tmp/color.war"), true);
-
-        return webArchive
-                ;
     }
 
     /**
