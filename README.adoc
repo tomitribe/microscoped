@@ -1,0 +1,184 @@
+# Microscoped
+
+A handful of custom CDI Scopes for your learning and hashmap-killing pleasure.
+
+While EJB has `@Stateless`, `@Singleton`, `@Stateful` there are near equivalent of all such concepts in CDI such as `@ApplicationScoped` and `@SessionScoped`.
+ Unlike its predecessor EJB, CDI is not fixed to just these bean types.  It is possible for nearly any lifecycle to be supported via adding a custom `@Scope` implementation.
+
+Despite this awesome power and potential, the use of custom CDI Scopes is rarely found in the wild.  This is more due to lack of resources and examples for doing so as well as a truly inspired set of ideas.
+
+This project attempts to give both.  Rest assured, if you're storing objects in a map in your code and hooking that map up to a `ThreadLocal`, that code is begging to be rewritten.
+
+## Out of the Box Scopes
+
+Microscoped provides a handful of real-world and usable scopes out of the box:
+
+ - `@MethodScoped` -  track objects based on the currently executing method
+ - `@DomainScoped` - swap out all your implementations based on what virtual host an HTTP request is targeting
+ - `@HeaderScoped` - specify a header, such as `version`, to toggle a completely different set of objects to be used to service a request
+ - `@TimerScoped` - keep state between EJB Timer firing by using a scope to remember where you left off last time the timer fired
+
+## Implementing a Custom Scope
+
+First order of business is to create the scope annotation itself:
+
+[source,java]
+----
+import javax.enterprise.context.NormalScope;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Documented
+@NormalScope(passivating = false)
+@Inherited
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
+public @interface MethodScoped {
+}
+----
+
+Next we need to register that scope with the `BeanManger` when the application starts.  We must specify a `Context` implementation.  No worries,
+Microscoped comes with one very simple implementation called `ScopeContext` that can hold anything.
+
+[source,java]
+----
+import org.tomitribe.microscoped.core.ScopeContext;
+
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.BeforeBeanDiscovery;
+import javax.enterprise.inject.spi.Extension;
+
+
+public class MethodScopedExtension implements Extension {
+
+    public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd) {
+        bbd.addScope(MethodScoped.class, true, false);
+        bbd.addInterceptorBinding(MethodScopeEnabled.class);
+    }
+
+    public void afterBeanDiscovery(@Observes AfterBeanDiscovery abd) {
+
+        abd.addContext(new ScopeContext<>(MethodScoped.class));
+
+    }
+}
+----
+
+Finally, we do the work of putting boundaries on when the scope should be active and not active.
+This is usually done with an interceptor, filter or some other around advice.
+
+[source,java]
+----
+import org.tomitribe.microscoped.core.ScopeContext;
+
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
+import javax.interceptor.InvocationContext;
+import java.lang.reflect.Method;
+
+@Interceptor
+@MethodScopeEnabled
+public class MethodScopedInterceptor {
+
+    @Inject
+    private BeanManager beanManager;
+
+    @AroundInvoke
+    public Object invoke(InvocationContext invocation) throws Exception {
+        final ScopeContext<Method> context = (ScopeContext<Method>) beanManager.getContext(MethodScoped.class);
+
+        final Method previous = context.enter(invocation.getMethod());
+        try {
+            return invocation.proceed();
+        } finally {
+            context.exit(previous);
+        }
+    }
+}
+----
+
+## Using a Custom Scope
+
+To use your newly created custom scope, you simply need to start annotating beans with it.
+
+The following will effectively give each method its very own `Count` instance.
+
+[source,java]
+----
+import org.tomitribe.microscoped.method.MethodScoped;
+
+import java.util.concurrent.atomic.AtomicInteger;
+
+@MethodScoped
+public class Count {
+
+    private final AtomicInteger count = new AtomicInteger();
+
+    public int get() {
+        return count.get();
+    }
+
+    public int add() {
+        return count.incrementAndGet();
+    }
+
+    public boolean compareAndSet(int expect, int update) {
+        return count.compareAndSet(expect, update);
+    }
+
+    public int remove() {
+        return count.decrementAndGet();
+    }
+}
+----
+
+Then, in complete magic and with no map in the service class at all, we will get one `Count` per method
+
+[source,java]
+----
+import org.tomitribe.microscoped.method.MethodScopeEnabled;
+
+import javax.ejb.Lock;
+import javax.ejb.Singleton;
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+
+import static javax.ejb.LockType.READ;
+
+@Lock(READ)
+@Singleton
+@Path("/color")
+@MethodScopeEnabled
+public class ColorService {
+
+    @Inject
+    private Count count;
+
+    @GET
+    @Path("/red")
+    public String red() {
+        return String.format("red, %s invocations", count.add());
+    }
+
+    @GET
+    @Path("/green")
+    public String green() {
+        return String.format("green, %s invocations", count.add());
+    }
+
+    @GET
+    @Path("/blue")
+    public String blue() {
+        return String.format("blue, %s invocations", count.add());
+    }
+
+}
+----
