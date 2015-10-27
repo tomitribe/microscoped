@@ -42,6 +42,7 @@
     <module>microscoped-method</module>
     <module>microscoped-domain</module>
     <module>microscoped-header</module>
+    <module>microscoped-timer</module>
   </modules>
 
   <properties>

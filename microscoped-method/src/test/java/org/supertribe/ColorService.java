@@ -35,7 +35,6 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Singleton
 @Path("/color")
 @MethodScopeEnabled
-//@Interceptors(MethodScopedInterceptor.class)
 public class ColorService {
 
     @Inject
