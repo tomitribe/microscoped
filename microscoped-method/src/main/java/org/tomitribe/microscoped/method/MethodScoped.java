@@ -14,22 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.supertribe;
+package org.tomitribe.microscoped.method;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
-import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.context.NormalScope;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-
-public class MethodScopedExtension implements Extension {
-
-    public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd) {
-        bbd.addScope(MethodScoped.class, true, false);
-    }
-
-    public void afterBeanDiscovery(@Observes AfterBeanDiscovery abd) {
-        abd.addContext(new ScopeContext<>(MethodScoped.class));
-    }
+@Documented
+@NormalScope(passivating = false)
+@Inherited
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
+public @interface MethodScoped {
 }

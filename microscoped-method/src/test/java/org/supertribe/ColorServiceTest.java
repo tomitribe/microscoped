@@ -27,6 +27,8 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.tomitribe.microscoped.core.ScopeContext;
+import org.tomitribe.microscoped.method.MethodScopedExtension;
 
 import javax.enterprise.inject.spi.Extension;
 import javax.ws.rs.core.MediaType;
@@ -63,6 +65,8 @@ public class ColorServiceTest extends Assert {
     @Deployment
     public static WebArchive createDeployment() {
         final WebArchive webArchive = ShrinkWrap.create(WebArchive.class)
+                .addPackage(ScopeContext.class.getPackage())
+                .addPackage(MethodScopedExtension.class.getPackage())
                 .addPackage(ColorService.class.getPackage())
                 .addAsWebInfResource(new StringAsset(""),
                         "classes/META-INF/beans.xml")
@@ -70,7 +74,7 @@ public class ColorServiceTest extends Assert {
                         "classes/META-INF/services/" + Extension.class.getName()
                 );
 
-        webArchive.as(ZipExporter.class).exportTo(new File("/tmp/color.war"), true);
+//        webArchive.as(ZipExporter.class).exportTo(new File("/tmp/color.war"), true);
 
         return webArchive
                 ;

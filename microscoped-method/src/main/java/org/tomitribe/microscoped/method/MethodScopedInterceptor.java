@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.supertribe;
+package org.tomitribe.microscoped.method;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
@@ -32,7 +32,7 @@ public class MethodScopedInterceptor {
 
     @AroundInvoke
     public Object invoke(InvocationContext invocation) throws Exception {
-        final ScopeContext<Method> context = (ScopeContext<Method>) beanManager.getContext(MethodScoped.class);
+        final org.tomitribe.microscoped.core.ScopeContext<Method> context = (org.tomitribe.microscoped.core.ScopeContext<Method>) beanManager.getContext(MethodScoped.class);
 
         final Method previous = context.enter(invocation.getMethod());
         try {

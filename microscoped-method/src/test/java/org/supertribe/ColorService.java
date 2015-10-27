@@ -16,6 +16,9 @@
  */
 package org.supertribe;
 
+import org.tomitribe.microscoped.method.MethodScopeEnabled;
+import org.tomitribe.microscoped.method.MethodScopedInterceptor;
+
 import javax.ejb.Lock;
 import javax.ejb.Singleton;
 import javax.inject.Inject;

@@ -16,18 +16,28 @@
  */
 package org.supertribe;
 
-import javax.interceptor.InterceptorBinding;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.tomitribe.microscoped.method.MethodScoped;
 
-@InterceptorBinding
-@Documented
-@Inherited
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
-public @interface MethodScopeEnabled {
+import java.util.concurrent.atomic.AtomicInteger;
+
+@MethodScoped
+public class Count {
+
+    private final AtomicInteger count = new AtomicInteger();
+
+    public int get() {
+        return count.get();
+    }
+
+    public int add() {
+        return count.incrementAndGet();
+    }
+
+    public boolean compareAndSet(int expect, int update) {
+        return count.compareAndSet(expect, update);
+    }
+
+    public int remove() {
+        return count.decrementAndGet();
+    }
 }

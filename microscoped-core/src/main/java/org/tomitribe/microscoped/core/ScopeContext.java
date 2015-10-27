@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.supertribe;
+package org.tomitribe.microscoped.core;
 
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
