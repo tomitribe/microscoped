@@ -41,6 +41,7 @@
     <module>microscoped-core</module>
     <module>microscoped-method</module>
     <module>microscoped-domain</module>
+    <module>microscoped-header</module>
   </modules>
 
   <properties>

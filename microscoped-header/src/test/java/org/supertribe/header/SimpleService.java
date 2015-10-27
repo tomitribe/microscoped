@@ -14,62 +14,32 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.supertribe;
+package org.supertribe.header;
 
-import org.tomitribe.microscoped.method.MethodScopeEnabled;
+import org.tomitribe.microscoped.header.Header;
 
 import javax.ejb.Lock;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 
 import static javax.ejb.LockType.READ;
-import static javax.ejb.LockType.WRITE;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 @Lock(READ)
 @Singleton
-@Path("/color")
-@MethodScopeEnabled
-//@Interceptors(MethodScopedInterceptor.class)
-public class ColorService {
+@Path("/domain")
+public class SimpleService {
 
     @Inject
     private Count count;
 
-    private String color;
-
-    public ColorService() {
-        this.color = "white";
-    }
+    @Inject
+    private Header header;
 
     @GET
-    public String getColor() {
-        return color;
+    public String get() {
+        return String.format("%s=%s , %s invocations", header.getName(), header.getValue(), count.add());
     }
 
-    @Lock(WRITE)
-    @Path("{color}")
-    @POST
-    public void setColor(@PathParam("color") String color) {
-        this.color = color;
-    }
-
-    @Path("red")
-    @GET
-    @Produces({APPLICATION_JSON})
-    public Color getRed() {
-        return new Color("red" + count.add(), 0xFF, 0x00, 0x00);
-    }
-
-    @Path("orange")
-    @GET
-    @Produces({APPLICATION_JSON})
-    public Color getOrange() {
-        return new Color("orange" + count.add(), 0xE7, 0x71, 0x00);
-    }
 }
