@@ -21,6 +21,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
@@ -67,8 +68,7 @@ public class ColorServiceTest extends Assert {
                 .addPackage(ScopeContext.class.getPackage())
                 .addPackage(MethodScopedExtension.class.getPackage())
                 .addPackage(ColorService.class.getPackage())
-                .addAsWebInfResource(new StringAsset(""),
-                        "classes/META-INF/beans.xml")
+                .addAsWebInfResource(new ClassLoaderAsset("META-INF/beans.xml"), "classes/META-INF/beans.xml")
                 .addAsWebInfResource(new StringAsset(MethodScopedExtension.class.getName()),
                         "classes/META-INF/services/" + Extension.class.getName()
                 );

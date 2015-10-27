@@ -28,9 +28,12 @@ public class MethodScopedExtension implements Extension {
 
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd) {
         bbd.addScope(MethodScoped.class, true, false);
+        bbd.addInterceptorBinding(MethodScopeEnabled.class);
     }
 
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery abd) {
+
         abd.addContext(new ScopeContext<>(MethodScoped.class));
+
     }
 }
