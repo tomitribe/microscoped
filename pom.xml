@@ -27,14 +27,14 @@
 
   <artifactId>microscoped-parent</artifactId>
   <packaging>pom</packaging>
-  <version>0.3-SNAPSHOT</version>
+  <version>0.3</version>
   <name>Tomitribe :: Microscoped</name>
 
   <scm>
     <connection>scm:git:git@github.com:tomitribe/microscoped.git</connection>
     <url>scm:git:git@github.com:tomitribe/microscoped.git</url>
     <developerConnection>scm:git:git@github.com:tomitribe/microscoped.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>microscoped-0.3</tag>
   </scm>
 
   <modules>
