@@ -92,7 +92,7 @@ public class TimerScopedTest extends Assert {
     @Test
     public void test() throws Exception {
 
-        Thread.sleep(TimeUnit.SECONDS.toMillis(6));
+        Thread.sleep(TimeUnit.SECONDS.toMillis(7));
 
         final WebClient webClient = WebClient.create(webappUrl.toURI());
         webClient.accept(MediaType.APPLICATION_JSON);
