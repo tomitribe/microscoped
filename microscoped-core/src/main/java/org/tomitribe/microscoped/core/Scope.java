@@ -71,6 +71,7 @@ class Scope<Key> {
         private final Contextual<T> contextual;
 
         public Instance(final Contextual<T> contextual, final CreationalContext<T> creationalContext) {
+
             this(contextual, creationalContext, contextual.create(creationalContext));
         }
 

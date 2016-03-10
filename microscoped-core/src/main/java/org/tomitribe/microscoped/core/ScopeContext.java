@@ -91,6 +91,11 @@ public class ScopeContext<Key> implements Context {
         });
     }
 
+    public void destroyAll() {
+        scopes.values().stream().forEach(Scope::destroy);
+        scopes.clear();
+    }
+
     @Override
     public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext) {
         return scope().get().get(contextual, creationalContext);
