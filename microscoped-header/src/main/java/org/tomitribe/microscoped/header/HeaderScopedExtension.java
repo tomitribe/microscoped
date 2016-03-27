@@ -27,6 +27,7 @@ import javax.enterprise.inject.spi.Extension;
 public class HeaderScopedExtension implements Extension {
 
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd) {
+
         bbd.addScope(HeaderScoped.class, true, false);
     }
 
