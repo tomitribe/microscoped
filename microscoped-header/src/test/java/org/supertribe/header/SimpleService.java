@@ -39,6 +39,7 @@ public class SimpleService {
 
     @GET
     public String get() {
+
         return String.format("%s=%s , %s invocations", header.getName(), header.getValue(), count.add());
     }
 
