@@ -27,6 +27,7 @@ import javax.enterprise.inject.spi.Extension;
 public class DomainScopedExtension implements Extension {
 
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd) {
+
         bbd.addScope(DomainScoped.class, true, false);
     }
 
