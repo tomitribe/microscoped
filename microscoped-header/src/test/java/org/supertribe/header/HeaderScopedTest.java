@@ -60,17 +60,20 @@ public class HeaderScopedTest extends Assert {
 
     @Test
     public void test() throws Exception {
-        assertDomain("1.0", 1);
-        assertDomain("1.0", 2);
-        assertDomain("1.1", 1);
-        assertDomain("1.1", 2);
-        assertDomain("1.1", 3);
-        assertDomain("1.0", 3);
-        assertDomain("1.0", 4);
-        assertDomain("1.1", 4);
+        assertHeader("1.0", 1);
+        assertHeader("1.0", 2);
+
+        assertHeader("1.1", 1);
+        assertHeader("1.1", 2);
+        assertHeader("1.1", 3);
+
+        assertHeader("1.0", 3);
+        assertHeader("1.0", 4);
+
+        assertHeader("1.1", 4);
     }
 
-    private void assertDomain(String version, int i) throws URISyntaxException {
+    private void assertHeader(String version, int i) throws URISyntaxException {
         final URI uri = webappUrl.toURI();
 
         final String result = WebClient.create(uri)
