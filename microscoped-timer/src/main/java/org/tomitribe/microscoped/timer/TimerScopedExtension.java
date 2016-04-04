@@ -33,7 +33,7 @@ public class TimerScopedExtension implements Extension {
 
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery abd) {
 
-        abd.addContext(new ScopeContext<>(TimerScoped.class));
+        abd.addContext(new ScopeContext<TimerScoped>(TimerScoped.class));
 
     }
 }

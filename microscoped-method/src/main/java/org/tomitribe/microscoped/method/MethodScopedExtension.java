@@ -33,7 +33,7 @@ public class MethodScopedExtension implements Extension {
 
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery abd) {
 
-        abd.addContext(new ScopeContext<>(MethodScoped.class));
+        abd.addContext(new ScopeContext<MethodScoped>(MethodScoped.class));
 
     }
 }

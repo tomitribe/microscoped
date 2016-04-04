@@ -45,7 +45,6 @@ public class HeaderScopedFilter implements javax.servlet.Filter {
     public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain) throws IOException, ServletException {
 
         final String value = getKey((HttpServletRequest) servletRequest);
-
         final ScopeContext<String> context = (ScopeContext<String>) beanManager.getContext(HeaderScoped.class);
 
         // set the name and value in the thread for others to see
@@ -63,7 +62,6 @@ public class HeaderScopedFilter implements javax.servlet.Filter {
 
     private String getKey(final HttpServletRequest request) {
         final String header = request.getHeader(config.getHeaderName());
-
         if (header != null) {
             return header;
         } else {

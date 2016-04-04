@@ -21,10 +21,11 @@ import javax.enterprise.context.spi.CreationalContext;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@SuppressWarnings("unchecked")
 class Scope<Key> {
-    private final Instance<?> NOTHING = new Instance<>(null, null, null);
+    private final Instance<?> NOTHING = new Instance<Object>(null, null, null);
 
-    private final Map<Contextual<?>, Instance> instances = new ConcurrentHashMap<>();
+    private final Map<Contextual<?>, Instance> instances = new ConcurrentHashMap<Contextual<?>, Instance>();
 
     private final Key key;
 
@@ -43,7 +44,12 @@ class Scope<Key> {
      * @return existing or newly created bean instance, never null
      */
     public <T> T get(final Contextual<T> contextual, final CreationalContext<T> creationalContext) {
-        return (T) instances.computeIfAbsent(contextual, c -> new Instance<>(contextual, creationalContext)).get();
+        Instance<T> instance = instances.get(contextual);
+        if(instance == null) {
+            instances.put(contextual, new Instance<T>(contextual, creationalContext));
+            instance = instances.get(contextual);
+        }
+        return instance.get();
     }
 
     /**
@@ -53,7 +59,12 @@ class Scope<Key> {
      * @return existing the bean instance or null
      */
     public <T> T get(final Contextual<T> contextual) {
-        return (T) instances.getOrDefault(contextual, NOTHING).get();
+        Instance<T> instance = instances.get(contextual);
+        if(instance == null){
+            return (T) NOTHING.get();
+        } else {
+            return instance.get();
+        }
     }
 
     /**
@@ -61,7 +72,9 @@ class Scope<Key> {
      */
     public void destroy() {
         // TODO We really should ensure no more instances can be added during or after this
-        instances.values().stream().forEach(Instance::destroy);
+        for(Instance instance : instances.values()) {
+            instance.destroy();
+        }
         instances.clear();
     }
 
