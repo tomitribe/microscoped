@@ -16,10 +16,9 @@
  */
 package org.supertribe;
 
-import org.apache.cxf.jaxrs.client.WebClient;
+import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -31,8 +30,6 @@ import org.tomitribe.microscoped.core.ScopeContext;
 import org.tomitribe.microscoped.method.MethodScopedExtension;
 
 import javax.enterprise.inject.spi.Extension;
-import java.net.URISyntaxException;
-import java.net.URL;
 
 @RunWith(Arquillian.class)
 public class MethodScopedTest extends Assert {
@@ -50,12 +47,11 @@ public class MethodScopedTest extends Assert {
                 );
     }
 
-    @ArquillianResource
-    private URL webappUrl;
+    @Inject
+    private ColorService colorService;
 
     @Test
     public void test() throws Exception {
-
         assertRequest("color/red", "red, 1 invocations");
         assertRequest("color/red", "red, 2 invocations");
         assertRequest("color/red", "red, 3 invocations");
@@ -65,14 +61,20 @@ public class MethodScopedTest extends Assert {
         assertRequest("color/red", "red, 4 invocations");
         assertRequest("color/blue", "blue, 1 invocations");
         assertRequest("color/blue", "blue, 2 invocations");
-
     }
 
-    private void assertRequest(String path, String expected) throws URISyntaxException {
-        final WebClient webClient = WebClient.create(webappUrl.toURI());
-        final String s = webClient.path(path).get(String.class);
-        assertEquals(expected, s);
+    private void assertRequest(String path, String expected) {
+        String actualMessage = invoke(path);
+        assertEquals(expected, actualMessage);
     }
 
-
+    private String invoke(String path) {
+        if(path.endsWith("red")) {
+            return colorService.red();
+        } else if(path.endsWith("green")) {
+            return colorService.green();
+        } else {
+            return colorService.blue();
+        }
+    }
 }

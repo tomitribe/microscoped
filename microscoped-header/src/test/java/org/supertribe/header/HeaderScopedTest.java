@@ -16,13 +16,17 @@
  */
 package org.supertribe.header;
 
-import org.apache.cxf.jaxrs.client.WebClient;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
@@ -31,8 +35,6 @@ import org.tomitribe.microscoped.core.ScopeContext;
 import org.tomitribe.microscoped.header.HeaderScopedExtension;
 
 import javax.enterprise.inject.spi.Extension;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 @RunWith(Arquillian.class)
@@ -45,13 +47,9 @@ public class HeaderScopedTest extends Assert {
                 .addPackage(ScopeContext.class.getPackage())
                 .addPackage(HeaderScopedExtension.class.getPackage())
                 .addPackage(SimpleService.class.getPackage())
+                .addPackages(true, "org.apache.http")
                 .addAsWebInfResource(new ClassLoaderAsset("META-INF/beans.xml"), "classes/META-INF/beans.xml")
-                .addAsWebInfResource(new StringAsset(HeaderScopedExtension.class.getName()),
-                        "classes/META-INF/services/" + Extension.class.getName()
-                )
-                .addAsWebInfResource(new StringAsset(HeaderScopedConfigExtension.class.getName()),
-                        "classes/META-INF/services/" + Extension.class.getName()
-                )
+                .addAsServiceProviderAndClasses(Extension.class, HeaderScopedConfigExtension.class, HeaderScopedExtension.class)
                 ;
     }
 
@@ -60,33 +58,27 @@ public class HeaderScopedTest extends Assert {
 
     @Test
     public void test() throws Exception {
-        assertHeader("1.0", 1);
-        assertHeader("1.0", 2);
-
-        assertHeader("1.1", 1);
-        assertHeader("1.1", 2);
-        assertHeader("1.1", 3);
-
-        assertHeader("1.0", 3);
-        assertHeader("1.0", 4);
-
-        assertHeader("1.1", 4);
+        assertVersion("1.0", 1);
+        assertVersion("1.0", 2);
+        assertVersion("1.1", 1);
+        assertVersion("1.1", 2);
+        assertVersion("1.1", 3);
+        assertVersion("1.1", 4);
+        assertVersion("1.0", 3);
+        assertVersion("1.0", 4);
     }
 
-    private void assertHeader(String version, int i) throws URISyntaxException {
-        final URI uri = webappUrl.toURI();
-
-        final String result = WebClient.create(uri)
-                .header("version", version)
-                .path("domain")
-                .get(String.class);
+    private void assertVersion(String version, int i) throws Exception {
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        final String uri = webappUrl.toURI() + "domain";
+        HttpGet get = new HttpGet(uri);
+        get.addHeader("version", version);
+        CloseableHttpResponse response = httpclient.execute(get);
+        HttpEntity entity = response.getEntity();
+        String s = EntityUtils.toString(entity);
 
         final String expected = String.format("version=%s , %s invocations", version, i);
 
-        assertEquals(expected, result);
-    }
-
-    private static URI setDomain(String domain, URI uri) throws URISyntaxException {
-        return new URI(uri.getScheme(), uri.getUserInfo(), domain, uri.getPort(), uri.getPath(), uri.getQuery(), uri.getFragment());
+        assertEquals(expected, s);
     }
 }

@@ -33,7 +33,7 @@ public class HeaderScopedExtension implements Extension {
 
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery abd) {
 
-        abd.addContext(new ScopeContext<>(HeaderScoped.class));
+        abd.addContext(new ScopeContext<HeaderScoped>(HeaderScoped.class));
 
     }
 }

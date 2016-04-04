@@ -30,15 +30,11 @@ import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
 
 import static javax.ejb.LockType.READ;
 
 @Lock(READ)
 @Singleton
-@Path("/color")
-//@TimerScopeEnabled
 @Interceptors(TimerScopedInterceptor.class)
 public class ColorService {
 
@@ -62,7 +58,6 @@ public class ColorService {
         }
     }
 
-    @GET
     public Log getLog() {
         return log;
     }

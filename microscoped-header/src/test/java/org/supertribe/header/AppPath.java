@@ -14,22 +14,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.supertribe.timer;
+package org.supertribe.header;
 
-import javax.enterprise.inject.Typed;
-import java.util.ArrayList;
-import java.util.List;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
 
-@Typed
-public class Log {
-
-    private final List<String> lines = new ArrayList<String>();
-
-    public List<String> getLines() {
-        return lines;
-    }
-
-    public boolean add(String s) {
-        return lines.add(s);
-    }
+@ApplicationPath("/")
+public class AppPath extends Application{
 }

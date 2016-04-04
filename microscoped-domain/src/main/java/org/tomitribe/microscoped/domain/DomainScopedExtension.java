@@ -23,7 +23,6 @@ import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 
-
 public class DomainScopedExtension implements Extension {
 
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd) {
@@ -33,7 +32,7 @@ public class DomainScopedExtension implements Extension {
 
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery abd) {
 
-        abd.addContext(new ScopeContext<>(DomainScoped.class));
+        abd.addContext(new ScopeContext<DomainScoped>(DomainScoped.class));
 
     }
 }

@@ -28,7 +28,6 @@
   <artifactId>microscoped-method</artifactId>
 
   <packaging>jar</packaging>
-
   <dependencies>
     <dependency>
       <groupId>org.tomitribe</groupId>
@@ -36,29 +35,16 @@
       <version>0.4-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.openejb</groupId>
-      <artifactId>javaee-api</artifactId>
-      <version>${openejb.javaee.api}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.openejb</groupId>
-      <artifactId>arquillian-tomee-embedded</artifactId>
-      <version>${tomee.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.openejb</groupId>
-      <artifactId>tomee-jaxrs</artifactId>
-      <version>${tomee.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.12</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.openejb</groupId>
+      <artifactId>javaee-api</artifactId>
+      <version>${openejb.javaee.api}</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
-
 </project>

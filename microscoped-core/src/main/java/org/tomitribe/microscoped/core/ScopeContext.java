@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class ScopeContext<Key> implements Context {
 
-    private final Map<Key, Scope> scopes = new ConcurrentHashMap<>();
+    private final Map<Key, Scope> scopes = new ConcurrentHashMap<Key, Scope>();
 
     /**
      * The use of an AtomicReference inside the ThreadLocal is a clever way to be able to
@@ -38,7 +38,7 @@ public class ScopeContext<Key> implements Context {
      *
      * Similar to if Map.Entry had a 'setValue(Object)' method
      */
-    private final ThreadLocal<AtomicReference<Scope<Key>>> active = ThreadLocal.withInitial(this::inactive);
+    private final ThreadLocal<AtomicReference<Scope<Key>>> active = new ThreadLocal<AtomicReference<Scope<Key>>>();
 
     private final Class<? extends Annotation> scopeAnnotation;
 
@@ -55,7 +55,11 @@ public class ScopeContext<Key> implements Context {
      * @return returns the previous "center of the world" so it can be reassociated when this scope exits
      */
     public Key enter(Key key) {
-        final Scope<Key> scope = scopes.computeIfAbsent(key, k -> new Scope(key));
+        Scope<Key> scope = scopes.get(key);
+        if(scope == null) {
+            scope = new Scope(key);
+            scopes.put(key, scope);
+        }
         return scope().getAndSet(scope).getKey();
     }
 
@@ -85,14 +89,16 @@ public class ScopeContext<Key> implements Context {
      * @param key the key of the scope
      */
     public void destroy(Key key) {
-        scopes.computeIfPresent(key, (k, scope) -> {
+        Scope scope = scopes.get(key);
+        if(scope != null) {
             scope.destroy();
-            return null;
-        });
+        }
     }
 
     public void destroyAll() {
-        scopes.values().stream().forEach(Scope::destroy);
+        for(Scope scope : scopes.values()) {
+            scope.destroy();
+        }
         scopes.clear();
     }
 
@@ -103,10 +109,15 @@ public class ScopeContext<Key> implements Context {
 
     @Override
     public <T> T get(Contextual<T> contextual) {
-        return scope().get().get(contextual);
+        AtomicReference<Scope<Key>> scope = scope();
+        Scope<Key> keyScope = scope.get();
+        return keyScope.get(contextual);
     }
 
     private AtomicReference<Scope<Key>> scope() {
+        if(active.get() == null) {
+            active.set(inactive());
+        }
         return active.get();
     }
 
@@ -138,6 +149,6 @@ public class ScopeContext<Key> implements Context {
     };
 
     private AtomicReference<Scope<Key>> inactive() {
-        return new AtomicReference<>(inactiveScope);
+        return new AtomicReference<Scope<Key>>(inactiveScope);
     }
 }

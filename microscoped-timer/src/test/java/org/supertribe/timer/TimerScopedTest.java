@@ -16,29 +16,22 @@
  */
 package org.supertribe.timer;
 
-import org.apache.cxf.jaxrs.client.WebClient;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.tomitribe.microscoped.core.ScopeContext;
 import org.tomitribe.microscoped.timer.TimerScopedExtension;
 
 import javax.enterprise.inject.spi.Extension;
-import javax.ws.rs.core.MediaType;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Collection;
+import javax.inject.Inject;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Arquillian will start the container, deploy all @Deployment bundles, then run all the @Test methods.
@@ -52,7 +45,7 @@ import java.util.concurrent.TimeUnit;
  *
  */
 @RunWith(Arquillian.class)
-public class TimerScopedTest extends Assert {
+public class TimerScopedTest {
 
     /**
      * ShrinkWrap is used to create a war file on the fly.
@@ -71,33 +64,18 @@ public class TimerScopedTest extends Assert {
                 .addPackage(TimerScopedExtension.class.getPackage())
                 .addPackage(ColorService.class.getPackage())
                 .addAsWebInfResource(new ClassLoaderAsset("META-INF/beans.xml"), "classes/META-INF/beans.xml")
-                .addAsWebInfResource(new StringAsset(TimerScopedExtension.class.getName()),
-                        "classes/META-INF/services/" + Extension.class.getName()
-                );
+                .addAsServiceProviderAndClasses(Extension.class, TimerScopedExtension.class);
     }
 
-    /**
-     * This URL will contain the following URL data
-     *
-     *  - http://<host>:<port>/<webapp>/
-     *
-     * This allows the test itself to be agnostic of server information or even
-     * the name of the webapp
-     *
-     */
-    @ArquillianResource
-    private URL webappUrl;
-
+    @Inject
+    private ColorService colorService;
 
     @Test
     public void test() throws Exception {
 
         Thread.sleep(TimeUnit.SECONDS.toMillis(7));
 
-        final WebClient webClient = WebClient.create(webappUrl.toURI());
-        webClient.accept(MediaType.APPLICATION_JSON);
-
-        final List<String> lines = webClient.path("color").get(Log.class).getLines();
+        final List<String> lines = colorService.getLog().getLines();
 
         assertTrue(lines.contains("red, 1"));
         assertTrue(lines.contains("red, 2"));
