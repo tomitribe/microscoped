@@ -71,14 +71,14 @@ public class DomainScopedTest extends Assert {
     @Test
     @Ignore("Comment this out to run the test")
     public void test() throws Exception {
-        assertDomain("orange", 1);
-        assertDomain("orange", 2);
-        assertDomain("red", 1);
-        assertDomain("red", 2);
-        assertDomain("red", 3);
-        assertDomain("orange", 3);
-        assertDomain("orange", 4);
-        assertDomain("red", 4);
+        assertDomain("http://orange/", 1);
+        assertDomain("http://orange/", 2);
+        assertDomain("http://red/", 1);
+        assertDomain("http://red/", 2);
+        assertDomain("http://red/", 3);
+        assertDomain("http://orange/", 3);
+        assertDomain("http://orange/", 4);
+        assertDomain("http://red/", 4);
     }
 
     private void assertDomain(String orange, int i) throws URISyntaxException {
@@ -90,6 +90,14 @@ public class DomainScopedTest extends Assert {
     }
 
     private static URI setDomain(String domain, URI uri) throws URISyntaxException {
-        return new URI(uri.getScheme(), uri.getUserInfo(), domain, uri.getPort(), uri.getPath(), uri.getQuery(), uri.getFragment());
+        final URI target = URI.create(domain);
+        return new URI(
+                uri.getScheme(),
+                uri.getUserInfo(),
+                target.getHost(),
+                uri.getPort(),
+                uri.getPath(),
+                uri.getQuery(),
+                uri.getFragment());
     }
 }

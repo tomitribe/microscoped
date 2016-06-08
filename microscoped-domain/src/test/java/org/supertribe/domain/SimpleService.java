@@ -39,7 +39,8 @@ public class SimpleService {
 
     @GET
     public String get() {
-        return String.format("%s domain, %s invocations", domain.getName(), count.add());
+        final int add = count.add();
+        return String.format("%s domain, %s invocations", domain.getName(), add);
     }
 
 }
