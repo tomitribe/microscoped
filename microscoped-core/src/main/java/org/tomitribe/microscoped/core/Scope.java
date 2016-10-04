@@ -43,7 +43,11 @@ class Scope<Key> {
      * @return existing or newly created bean instance, never null
      */
     public <T> T get(final Contextual<T> contextual, final CreationalContext<T> creationalContext) {
-        return (T) instances.computeIfAbsent(contextual, c -> new Instance<>(contextual, creationalContext)).get();
+        if (!instances.containsKey(contextual)) {
+            final Instance<T> instance = new Instance<>(contextual, creationalContext);
+            instances.putIfAbsent(contextual, instance);
+        }
+        return (T) instances.get(contextual).get();
     }
 
     /**
