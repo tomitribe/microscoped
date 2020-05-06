@@ -3,7 +3,6 @@
 *.jar
 *.war
 *.ear
-# IDEA #
 *.iml
 *.ipr
 .idea
