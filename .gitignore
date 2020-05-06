@@ -1,51 +1,34 @@
-*.bak
+# Java #
 *.class
-*.ear
-*.iml
-*.ipr
-*.iws
-*.launch
-*.pydevproject
-*.swp
-*.tmp
+
+# Package Files #
+*.jar
 *.war
-*~.nib
-.AppleDB
-.AppleDesktop
-.AppleDouble
-.DS_Store
-.LSOverride
-.Spotlight-V100
-.Trashes
-._*
-.apdisk
-.buildpath
-.cproject
-.externalToolBuilders/
-.gradle
-.idea/
-.idea_modules/
-.loadpath
+*.ear
+
+# IDEA #
+*.iml
+.idea
+*~
+
+# eclipse specific git ignore
+.project
 .metadata
-.mtj.tmp/
+.classpath
+.checkstyle
 .settings/
-.target
-.texlipse
-/*.iml
-Icon
-Network Trash Folder
-Temporary Items
-atlassian-ide-plugin.xml
-bin/
-com_crashlytics_export_strings.xml
-hs_err_pid*
-local.properties
-out/
-pom.xml.next
-pom.xml.releaseBackup
+
+# Maven files #
+data/
+target
 pom.xml.tag
+pom.xml.releaseBackup
 pom.xml.versionsBackup
+pom.xml.next
 release.properties
-target/
-tmp/
-build/
+dependency-reduced-pom.xml
+
+# Misc #
+*.log
+.DS_Store
+/bin/

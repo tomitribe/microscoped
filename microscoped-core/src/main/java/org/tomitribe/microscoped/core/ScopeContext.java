@@ -120,6 +120,16 @@ public class ScopeContext<Key> implements Context {
         return scopeAnnotation;
     }
 
+    public Key getKey() {
+        Key key;
+        if(scope() != null && scope().get() != null) {
+            key = scope().get().getKey();
+        } else {
+            key = null;
+        }
+        return key;
+    }
+
     private final Scope<Key> inactiveScope = new Scope<Key>(null) {
         @Override
         public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext) {
