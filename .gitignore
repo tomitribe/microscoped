@@ -1,14 +1,18 @@
 *.bak
 *.class
+*.jar
+*.war
 *.ear
 *.iml
 *.ipr
+.idea
 *.iws
+*~
 *.launch
 *.pydevproject
 *.swp
+.project
 *.tmp
-*.war
 *~.nib
 .AppleDB
 .AppleDesktop
@@ -28,11 +32,15 @@
 .loadpath
 .metadata
 .mtj.tmp/
+.classpath
+.checkstyle
 .settings/
 .target
 .texlipse
 /*.iml
+data/
 Icon
+target
 Network Trash Folder
 Temporary Items
 atlassian-ide-plugin.xml
@@ -47,5 +55,8 @@ pom.xml.tag
 pom.xml.versionsBackup
 release.properties
 target/
+dependency-reduced-pom.xml
 tmp/
 build/
+*.log
+/bin/
