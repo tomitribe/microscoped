@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.tomitribe</groupId>
     <artifactId>microscoped-parent</artifactId>
-    <version>0.4-SNAPSHOT</version>
+    <version>0.4</version>
   </parent>
 
   <artifactId>microscoped-timer</artifactId>
@@ -33,7 +33,7 @@
     <dependency>
       <groupId>org.tomitribe</groupId>
       <artifactId>microscoped-core</artifactId>
-      <version>0.4-SNAPSHOT</version>
+      <version>0.4</version>
     </dependency>
     <dependency>
       <groupId>org.apache.openejb</groupId>
