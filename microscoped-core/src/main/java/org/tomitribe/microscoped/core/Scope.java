@@ -18,14 +18,17 @@ package org.tomitribe.microscoped.core;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 
+import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
 
 class Scope<Key> {
     private final Map<Contextual<?>, CompletableFuture<Instance>> instances = new ConcurrentHashMap<>();
+    private volatile boolean closed = false;
     private final Key key;
 
     public Scope(final Key key) {
@@ -43,30 +46,37 @@ class Scope<Key> {
      * @return existing or newly created bean instance, never null
      */
     public <T> T get(final Contextual<T> contextual, final CreationalContext<T> creationalContext) {
-        CompletableFuture<Instance> future = instances.get(contextual);
-        if (future == null) {
-            final CompletableFuture<Instance> newFuture = new CompletableFuture<>();
-            // Atomically place the new future in the map.
-            future = instances.putIfAbsent(contextual, newFuture);
+        if (closed) {
+            throw new ContextNotActiveException(String.format("Context not active [key=%s, contextual=%s, creationalContext=%s]",
+                    String.valueOf(key),
+                    (contextual instanceof Bean) ? ((Bean<?>) contextual).getBeanClass().getName() : String.valueOf(contextual),
+                    String.valueOf(creationalContext)));
+        } else {
+            CompletableFuture<Instance> future = instances.get(contextual);
             if (future == null) {
-                // We won the race. Our future is now in the map. We are responsible for creating the bean.
-                future = newFuture;
-                try {
-                    // The creation logic is now safely executed by only one thread.
-                    final Instance<T> createdInstance = new Instance<>(contextual, creationalContext);
-                    future.complete(createdInstance); // Publish the result for other threads.
-                } catch (final Throwable e) {
-                    // If creation fails, complete the future exceptionally and remove it from the map
-                    // so that subsequent requests can try again.
-                    future.completeExceptionally(e);
-                    instances.remove(contextual, future);
-                    // Re-throw the original exception.
-                    throw e;
+                final CompletableFuture<Instance> newFuture = new CompletableFuture<>();
+                // Atomically place the new future in the map.
+                future = instances.putIfAbsent(contextual, newFuture);
+                if (future == null) {
+                    // We won the race. Our future is now in the map. We are responsible for creating the bean.
+                    future = newFuture;
+                    try {
+                        // The creation logic is now safely executed by only one thread.
+                        final Instance<T> createdInstance = new Instance<>(contextual, creationalContext);
+                        future.complete(createdInstance); // Publish the result for other threads.
+                    } catch (final Throwable e) {
+                        // If creation fails, complete the future exceptionally and remove it from the map
+                        // so that subsequent requests can try again.
+                        future.completeExceptionally(e);
+                        instances.remove(contextual, future);
+                        // Re-throw the original exception.
+                        throw e;
+                    }
                 }
             }
+            // All threads (the winner and the waiters) wait here for the result.
+            return fastWait(future);
         }
-        // All threads (the winner and the waiters) wait here for the result.
-        return fastWaitForValue(future);
     }
 
     /**
@@ -76,11 +86,16 @@ class Scope<Key> {
      * @return existing the bean instance or null
      */
     public <T> T get(final Contextual<T> contextual) {
-        final CompletableFuture<Instance> future = instances.get(contextual);
-        return fastWaitForValue(future);
+        if (closed) {
+            throw new ContextNotActiveException(String.format("Context not active [key=%s, contextual=%s]", String.valueOf(key),
+                    (contextual instanceof Bean) ? ((Bean<?>) contextual).getBeanClass().getName() : String.valueOf(contextual)));
+        } else {
+            final CompletableFuture<Instance> future = instances.get(contextual);
+            return fastWait(future);
+        }
     }
 
-    private static <T> T fastWaitForValue(final CompletableFuture<Instance> future) throws Error {
+    private static <T> T fastWait(final CompletableFuture<Instance> future) throws Error {
         final T value;
         if (future == null) {
             value = null;
@@ -90,15 +105,15 @@ class Scope<Key> {
             value = instance.get();
         } else {
             try {
-                final Instance<T> instance = future.join();
+                final Instance<T> instance = future.get();
                 value = instance.get();
-            } catch (final CompletionException ce) {
-                // Try to hide internal semantics here in case someone is expecting a CreationException or something
-                final Throwable cause = ce.getCause() != null ? ce.getCause() : ce;
+            } catch (final InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException(e);
+            } catch (final ExecutionException ee) {
+                final Throwable cause = ee.getCause() != null ? ee.getCause() : ee;
                 if (cause instanceof RuntimeException) {
                     throw (RuntimeException) cause;
-                } else if (cause instanceof Error) {
-                    throw (Error) cause;
                 } else {
                     throw new RuntimeException(cause);
                 }
@@ -111,9 +126,10 @@ class Scope<Key> {
      * Destroy all the instances in this scope
      */
     public void destroy() {
-        // TODO We really should ensure no more instances can be added during or after this
+        closed = true;
         instances.values().forEach((final CompletableFuture<Instance> future) -> {
-            if (future.isDone() && !future.isCompletedExceptionally()) {
+            // There's a small chance
+            if (!future.isCompletedExceptionally()) {
                 future.join().destroy();
             }
         });
