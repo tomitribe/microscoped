@@ -20,22 +20,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.enterprise.inject.Typed;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlRootElement;
 
 @Typed
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Log {
 
-    final List<String> lines = new ArrayList<String>();
+    private List<String> lines = new ArrayList<>();
 
     public Log() {
     }
 
     public List<String> getLines() {
         return lines;
+    }
+
+    public void setLines(List<String> lines) {
+        this.lines = lines;
     }
 
     public boolean add(String s) {

@@ -67,6 +67,12 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.5.2</version>
+        <configuration>
+          <argLine>-Xmx1024m</argLine>
+          <systemPropertyVariables>
+            <openejb.jsf.skip>true</openejb.jsf.skip>
+          </systemPropertyVariables>
+        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -96,7 +102,7 @@
     <dependencies>
       <dependency>
         <groupId>jakarta.platform</groupId>
-        <artifactId>jakarta.jakartaee-api</artifactId>
+        <artifactId>jakarta.jakartaee-web-api</artifactId>
         <version>${jakartaee.api.version}</version>
         <scope>provided</scope>
       </dependency>
