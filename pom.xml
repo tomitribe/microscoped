@@ -47,9 +47,10 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <tomee.version>1.7.2</tomee.version>
-    <openejb.javaee.api>6.0-6</openejb.javaee.api>
-
+    <tomee.version>10.1.5</tomee.version>
+    <jakartaee.api.version>10.0.0</jakartaee.api.version>
+    <junit.version>5.11.4</junit.version>
+    <arquillian.version>1.9.1.Final</arquillian.version>
   </properties>
 
   <build>
@@ -57,23 +58,27 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.2</version>
+        <version>3.13.0</version>
         <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
+          <release>17</release>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.5.2</version>
       </plugin>
     </plugins>
   </build>
 
   <repositories>
-    <repository>
-      <id>snapshots</id>
-      <url>http://repository.tomitribe.com/content/repositories/snapshots</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
+<!--    <repository>-->
+<!--      <id>snapshots</id>-->
+<!--      <url>http://repository.tomitribe.com/content/repositories/snapshots</url>-->
+<!--      <snapshots>-->
+<!--        <enabled>true</enabled>-->
+<!--      </snapshots>-->
+<!--    </repository>-->
     <repository>
       <id>Sonatype-public</id>
       <name>Sonatype snapshot and release</name>
@@ -90,17 +95,26 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>4.11</version>
-        <scope>test</scope>
+        <groupId>jakarta.platform</groupId>
+        <artifactId>jakarta.jakartaee-api</artifactId>
+        <version>${jakartaee.api.version}</version>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>
-        <groupId>org.tomitribe</groupId>
-        <artifactId>tomitribe-util</artifactId>
-        <version>1.2.1</version>
-        <!--<scope>compile</scope>-->
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${junit.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.arquillian</groupId>
+        <artifactId>arquillian-bom</artifactId>
+        <version>${arquillian.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>

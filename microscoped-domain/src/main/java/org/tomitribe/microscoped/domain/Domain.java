@@ -16,7 +16,7 @@
  */
 package org.tomitribe.microscoped.domain;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 @RequestScoped
 public class Domain {

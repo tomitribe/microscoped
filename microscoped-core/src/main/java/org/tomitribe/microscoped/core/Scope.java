@@ -16,10 +16,11 @@
  */
 package org.tomitribe.microscoped.core;
 
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import jakarta.enterprise.context.spi.Contextual;
+import jakarta.enterprise.context.spi.CreationalContext;
 
 class Scope<Key> {
     private final Instance<?> NOTHING = new Instance<>(null, null, null);

@@ -16,9 +16,9 @@
  */
 package org.supertribe.domain;
 
-import org.tomitribe.microscoped.domain.DomainScoped;
-
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.tomitribe.microscoped.domain.DomainScoped;
 
 @DomainScoped
 public class Count {
