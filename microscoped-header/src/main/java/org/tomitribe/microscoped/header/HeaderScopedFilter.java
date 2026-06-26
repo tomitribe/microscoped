@@ -16,21 +16,22 @@
  */
 package org.tomitribe.microscoped.header;
 
-import org.tomitribe.microscoped.core.ScopeContext;
-
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+import org.tomitribe.microscoped.core.ScopeContext;
+
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.http.HttpServletRequest;
+
 @WebFilter(urlPatterns = "/*")
-public class HeaderScopedFilter implements javax.servlet.Filter {
+public class HeaderScopedFilter implements jakarta.servlet.Filter {
 
     @Inject
     private BeanManager beanManager;

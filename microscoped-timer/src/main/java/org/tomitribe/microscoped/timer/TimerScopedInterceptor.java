@@ -16,16 +16,17 @@
  */
 package org.tomitribe.microscoped.timer;
 
+import java.io.Serializable;
+
 import org.tomitribe.microscoped.core.ScopeContext;
 
-import javax.ejb.ScheduleExpression;
-import javax.ejb.Timer;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-import javax.interceptor.AroundTimeout;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
-import java.io.Serializable;
+import jakarta.ejb.ScheduleExpression;
+import jakarta.ejb.Timer;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
+import jakarta.interceptor.AroundTimeout;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
 
 @Interceptor
 @TimerScopeEnabled

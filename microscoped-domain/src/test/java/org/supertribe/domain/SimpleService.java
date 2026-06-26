@@ -16,15 +16,15 @@
  */
 package org.supertribe.domain;
 
+import static jakarta.ejb.LockType.READ;
+
 import org.tomitribe.microscoped.domain.Domain;
 
-import javax.ejb.Lock;
-import javax.ejb.Singleton;
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-
-import static javax.ejb.LockType.READ;
+import jakarta.ejb.Lock;
+import jakarta.ejb.Singleton;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
 
 @Lock(READ)
 @Singleton

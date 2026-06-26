@@ -16,9 +16,9 @@
  */
 package org.supertribe.header;
 
-import org.tomitribe.microscoped.header.HeaderScoped;
-
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.tomitribe.microscoped.header.HeaderScoped;
 
 @HeaderScoped
 public class Count {

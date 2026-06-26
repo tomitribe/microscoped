@@ -16,7 +16,7 @@
  */
 package org.tomitribe.microscoped.header;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class HeaderScopedConfig {

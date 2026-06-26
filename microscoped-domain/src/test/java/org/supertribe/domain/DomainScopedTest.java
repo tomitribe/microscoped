@@ -16,25 +16,27 @@
  */
 package org.supertribe.domain;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.tomitribe.microscoped.core.ScopeContext;
 import org.tomitribe.microscoped.domain.DomainScopedExtension;
 
-import javax.enterprise.inject.spi.Extension;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
+import jakarta.enterprise.inject.spi.Extension;
 
 /**
  *
@@ -49,8 +51,8 @@ import java.net.URL;
  *
  * Then comment out the @Ignore
  */
-@RunWith(Arquillian.class)
-public class DomainScopedTest extends Assert {
+@ExtendWith(ArquillianExtension.class)
+public class DomainScopedTest {
 
     @Deployment
     public static WebArchive createDeployment() {
@@ -69,7 +71,7 @@ public class DomainScopedTest extends Assert {
     private URL webappUrl;
 
     @Test
-    @Ignore("Comment this out to run the test")
+    @Disabled("Comment this out to run the test")
     public void test() throws Exception {
         assertDomain("http://orange/", 1);
         assertDomain("http://orange/", 2);

@@ -16,9 +16,9 @@
  */
 package org.supertribe;
 
-import org.tomitribe.microscoped.method.MethodScoped;
-
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.tomitribe.microscoped.method.MethodScoped;
 
 @MethodScoped
 public class Count {

@@ -16,9 +16,9 @@
  */
 package org.supertribe.timer;
 
-import org.tomitribe.microscoped.timer.TimerScoped;
-
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.tomitribe.microscoped.timer.TimerScoped;
 
 @TimerScoped
 public class Count {

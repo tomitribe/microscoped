@@ -16,29 +16,27 @@
  */
 package org.supertribe.timer;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.net.URL;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.tomitribe.microscoped.core.ScopeContext;
 import org.tomitribe.microscoped.timer.TimerScopedExtension;
 
-import javax.enterprise.inject.spi.Extension;
-import javax.ws.rs.core.MediaType;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.ws.rs.core.MediaType;
 
 /**
  * Arquillian will start the container, deploy all @Deployment bundles, then run all the @Test methods.
@@ -51,8 +49,8 @@ import java.util.concurrent.TimeUnit;
  * of a class for another allowing for easy mocking.
  *
  */
-@RunWith(Arquillian.class)
-public class TimerScopedTest extends Assert {
+@ExtendWith(ArquillianExtension.class)
+public class TimerScopedTest {
 
     /**
      * ShrinkWrap is used to create a war file on the fly.

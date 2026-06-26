@@ -16,25 +16,25 @@
  */
 package org.supertribe.timer;
 
-import javax.enterprise.inject.Typed;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.enterprise.inject.Typed;
+
 @Typed
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Log {
 
-    final List<String> lines = new ArrayList<String>();
+    private List<String> lines = new ArrayList<>();
 
     public Log() {
     }
 
     public List<String> getLines() {
         return lines;
+    }
+
+    public void setLines(List<String> lines) {
+        this.lines = lines;
     }
 
     public boolean add(String s) {

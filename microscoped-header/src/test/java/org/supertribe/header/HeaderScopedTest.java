@@ -16,27 +16,29 @@
  */
 package org.supertribe.header;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.tomitribe.microscoped.core.ScopeContext;
 import org.tomitribe.microscoped.header.HeaderScopedExtension;
 
-import javax.enterprise.inject.spi.Extension;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
+import jakarta.enterprise.inject.spi.Extension;
 
-@RunWith(Arquillian.class)
-public class HeaderScopedTest extends Assert {
+@ExtendWith(ArquillianExtension.class)
+public class HeaderScopedTest {
 
     @Deployment
     public static WebArchive createDeployment() {
