@@ -24,7 +24,7 @@ First order of business is to create the scope annotation itself:
 
 [source,java]
 ----
-import jakarta.enterprise.context.NormalScope;
+import javax.enterprise.context.NormalScope;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -48,10 +48,10 @@ Microscoped comes with one very simple implementation called `ScopeContext` that
 ----
 import org.tomitribe.microscoped.core.ScopeContext;
 
-import jakarta.enterprise.event.Observes;
-import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
-import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
-import jakarta.enterprise.inject.spi.Extension;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.BeforeBeanDiscovery;
+import javax.enterprise.inject.spi.Extension;
 
 
 public class MethodScopedExtension implements Extension {
@@ -76,11 +76,11 @@ This is usually done with an interceptor, filter or some other around advice.
 ----
 import org.tomitribe.microscoped.core.ScopeContext;
 
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.inject.Inject;
-import jakarta.interceptor.AroundInvoke;
-import jakarta.interceptor.Interceptor;
-import jakarta.interceptor.InvocationContext;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
+import javax.interceptor.InvocationContext;
 import java.lang.reflect.Method;
 
 @Interceptor
@@ -145,13 +145,13 @@ Then, in complete magic and with no map in the service class at all, we will get
 ----
 import org.tomitribe.microscoped.method.MethodScopeEnabled;
 
-import jakarta.ejb.Lock;
-import jakarta.ejb.Singleton;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
+import javax.ejb.Lock;
+import javax.ejb.Singleton;
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 
-import static jakarta.ejb.LockType.READ;
+import static javax.ejb.LockType.READ;
 
 @Lock(READ)
 @Singleton
